@@ -1,0 +1,127 @@
+2025-12-12 13:01:11,571 - edusolve - WARNING - Groq API key not found
+2025-12-12 13:01:11,574 - edusolve - WARNING - Gemini API key not found
+2025-12-12 13:22:39,173 - edusolve - WARNING - Groq API key not found
+2025-12-12 13:22:39,193 - edusolve - WARNING - Gemini API key not found
+2025-12-12 13:40:17,111 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 13:40:17,116 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 13:40:17,121 - edusolve - INFO - EduSolve application started
+2025-12-12 13:40:17,343 - edusolve - INFO - EduSolve application started
+2025-12-12 13:40:39,165 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 13:40:39,167 - edusolve - INFO - EduSolve application started
+2025-12-12 13:41:02,576 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 13:41:02,581 - edusolve - INFO - EduSolve application started
+2025-12-12 13:41:23,507 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 13:41:23,509 - edusolve - INFO - EduSolve application started
+2025-12-12 13:41:26,367 - edusolve - INFO - Saved uploaded file: C:\Edusolve\uploads\CY2603 - CBT - UPC - 2 Marks.pdf
+2025-12-12 13:41:26,496 - edusolve - INFO - Attempting generation with provider: groq
+2025-12-12 13:41:26,732 - edusolve - ERROR - Groq API error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}
+2025-12-12 13:41:26,734 - edusolve - WARNING - Provider groq failed: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}
+2025-12-12 13:41:27,737 - edusolve - INFO - Attempting generation with provider: gemini
+2025-12-12 13:41:28,672 - edusolve - ERROR - Gemini API error: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-12-12 13:41:28,673 - edusolve - WARNING - Provider gemini failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-12-12 13:41:29,678 - edusolve - INFO - Attempting generation with provider: huggingface
+2025-12-12 13:41:30,000 - edusolve - ERROR - HuggingFace API error: HF API error 410: {"error":"https://api-inference.huggingface.co is no longer supported. Please use https://router.huggingface.co instead."}
+2025-12-12 13:41:30,001 - edusolve - WARNING - Provider huggingface failed: HF API error 410: {"error":"https://api-inference.huggingface.co is no longer supported. Please use https://router.huggingface.co instead."}
+2025-12-12 13:41:33,022 - edusolve - INFO - Attempting generation with provider: groq
+2025-12-12 13:41:33,121 - edusolve - ERROR - Groq API error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}
+2025-12-12 13:41:33,121 - edusolve - WARNING - Provider groq failed: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}
+2025-12-12 13:41:34,126 - edusolve - INFO - Attempting generation with provider: gemini
+2025-12-12 13:41:34,289 - edusolve - ERROR - Gemini API error: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-12-12 13:41:34,290 - edusolve - WARNING - Provider gemini failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-12-12 13:41:35,296 - edusolve - INFO - Attempting generation with provider: huggingface
+2025-12-12 13:41:41,979 - edusolve - ERROR - HuggingFace API error: HF API error 410: {"error":"https://api-inference.huggingface.co is no longer supported. Please use https://router.huggingface.co instead."}
+2025-12-12 13:41:41,979 - edusolve - WARNING - Provider huggingface failed: HF API error 410: {"error":"https://api-inference.huggingface.co is no longer supported. Please use https://router.huggingface.co instead."}
+2025-12-12 13:41:44,988 - edusolve - INFO - Attempting generation with provider: groq
+2025-12-12 13:41:45,072 - edusolve - ERROR - Groq API error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}
+2025-12-12 13:41:45,072 - edusolve - WARNING - Provider groq failed: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}
+2025-12-12 13:41:46,079 - edusolve - INFO - Attempting generation with provider: gemini
+2025-12-12 13:41:46,240 - edusolve - ERROR - Gemini API error: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-12-12 13:41:46,240 - edusolve - WARNING - Provider gemini failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-12-12 13:41:47,248 - edusolve - INFO - Attempting generation with provider: huggingface
+2025-12-12 13:41:54,018 - edusolve - ERROR - HuggingFace API error: HF API error 410: {"error":"https://api-inference.huggingface.co is no longer supported. Please use https://router.huggingface.co instead."}
+2025-12-12 13:41:54,018 - edusolve - WARNING - Provider huggingface failed: HF API error 410: {"error":"https://api-inference.huggingface.co is no longer supported. Please use https://router.huggingface.co instead."}
+2025-12-12 13:41:55,034 - edusolve - ERROR - LLM question extraction failed: RetryError[<Future at 0x23e1f1f8b10 state=finished raised Exception>]
+2025-12-12 13:41:55,039 - edusolve - ERROR - Processing error: RetryError[<Future at 0x23e1f1f8b10 state=finished raised Exception>]
+2025-12-12 13:41:55,048 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 13:41:55,051 - edusolve - INFO - EduSolve application started
+2025-12-12 13:42:30,013 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 13:42:30,016 - edusolve - INFO - EduSolve application started
+2025-12-12 13:42:36,604 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 13:42:36,608 - edusolve - INFO - EduSolve application started
+2025-12-12 13:43:14,119 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 13:43:14,122 - edusolve - INFO - EduSolve application started
+2025-12-12 13:43:16,361 - edusolve - INFO - Saved uploaded file: C:\Edusolve\uploads\CY2603 - CBT - Unit 5 F - Notes.pdf
+2025-12-12 13:43:16,475 - edusolve - INFO - Processed CY2603 - CBT - Unit 5 F - Notes.pdf into 71 chunks
+2025-12-12 13:43:16,476 - edusolve - INFO - Processed 1 files into 71 total chunks
+2025-12-12 13:43:16,481 - edusolve - INFO - Loading embedding model: sentence-transformers/all-MiniLM-L6-v2
+2025-12-12 13:46:14,192 - edusolve - INFO - Embedding model loaded successfully
+2025-12-12 13:46:14,193 - edusolve - INFO - Generating embeddings for 71 documents
+2025-12-12 13:46:43,343 - edusolve - INFO - Generated embeddings with shape: (71, 384)
+2025-12-12 13:46:43,351 - edusolve - INFO - Creating FAISS index with 71 vectors of dimension 384
+2025-12-12 13:46:43,353 - edusolve - INFO - FAISS index created with 71 vectors
+2025-12-12 13:46:43,358 - edusolve - INFO - Saving vector store to C:\Edusolve\vector_stores\CBT
+2025-12-12 13:46:43,366 - edusolve - INFO - Vector store saved successfully
+2025-12-12 13:46:43,369 - edusolve - INFO - Loading embedding model: sentence-transformers/all-MiniLM-L6-v2
+2025-12-12 13:46:43,558 - edusolve - INFO - Embedding model loaded successfully
+2025-12-12 13:46:43,561 - edusolve - INFO - Loading vector store from C:\Edusolve\vector_stores\CBT
+2025-12-12 13:46:43,593 - edusolve - INFO - Loaded vector store with 71 vectors
+2025-12-12 13:46:43,594 - edusolve - INFO - RAG retriever initialized with existing vector store
+2025-12-12 13:46:43,605 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 13:46:43,608 - edusolve - INFO - EduSolve application started
+2025-12-12 13:48:27,095 - edusolve - INFO - Retrieved 3 relevant chunks for query
+2025-12-12 13:48:27,105 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 13:48:27,107 - edusolve - INFO - EduSolve application started
+2025-12-12 13:58:08,310 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 13:58:08,313 - edusolve - INFO - EduSolve application started
+2025-12-12 13:58:19,491 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 13:58:19,495 - edusolve - INFO - EduSolve application started
+2025-12-12 13:58:28,474 - edusolve - INFO - Saved uploaded file: C:\Edusolve\uploads\CY2603 - CBT - Unit 5 F - Notes.pdf
+2025-12-12 13:58:28,617 - edusolve - INFO - Attempting generation with provider: groq
+2025-12-12 13:58:29,653 - edusolve - ERROR - Groq API error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}
+2025-12-12 13:58:29,654 - edusolve - WARNING - Provider groq failed: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}
+2025-12-12 13:58:30,668 - edusolve - INFO - Attempting generation with provider: gemini
+2025-12-12 13:58:31,321 - edusolve - ERROR - Gemini API error: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-12-12 13:58:31,322 - edusolve - WARNING - Provider gemini failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-12-12 13:58:32,335 - edusolve - INFO - Attempting generation with provider: huggingface
+2025-12-12 13:58:33,105 - edusolve - ERROR - HuggingFace API error: HF API error 410: {"error":"https://api-inference.huggingface.co is no longer supported. Please use https://router.huggingface.co instead."}
+2025-12-12 13:58:33,105 - edusolve - WARNING - Provider huggingface failed: HF API error 410: {"error":"https://api-inference.huggingface.co is no longer supported. Please use https://router.huggingface.co instead."}
+2025-12-12 13:58:36,103 - edusolve - INFO - Attempting generation with provider: groq
+2025-12-12 13:58:36,282 - edusolve - ERROR - Groq API error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}
+2025-12-12 13:58:36,282 - edusolve - WARNING - Provider groq failed: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}
+2025-12-12 13:58:37,284 - edusolve - INFO - Attempting generation with provider: gemini
+2025-12-12 13:58:37,454 - edusolve - ERROR - Gemini API error: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-12-12 13:58:37,455 - edusolve - WARNING - Provider gemini failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-12-12 13:58:38,468 - edusolve - INFO - Attempting generation with provider: huggingface
+2025-12-12 13:58:44,658 - edusolve - ERROR - HuggingFace API error: HF API error 410: {"error":"https://api-inference.huggingface.co is no longer supported. Please use https://router.huggingface.co instead."}
+2025-12-12 13:58:44,658 - edusolve - WARNING - Provider huggingface failed: HF API error 410: {"error":"https://api-inference.huggingface.co is no longer supported. Please use https://router.huggingface.co instead."}
+2025-12-12 13:58:47,672 - edusolve - INFO - Attempting generation with provider: groq
+2025-12-12 13:58:47,777 - edusolve - ERROR - Groq API error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}
+2025-12-12 13:58:47,777 - edusolve - WARNING - Provider groq failed: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}
+2025-12-12 13:58:48,787 - edusolve - INFO - Attempting generation with provider: gemini
+2025-12-12 13:58:48,959 - edusolve - ERROR - Gemini API error: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-12-12 13:58:48,960 - edusolve - WARNING - Provider gemini failed: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+2025-12-12 13:58:49,969 - edusolve - INFO - Attempting generation with provider: huggingface
+2025-12-12 13:58:56,675 - edusolve - ERROR - HuggingFace API error: HF API error 410: {"error":"https://api-inference.huggingface.co is no longer supported. Please use https://router.huggingface.co instead."}
+2025-12-12 13:58:56,676 - edusolve - WARNING - Provider huggingface failed: HF API error 410: {"error":"https://api-inference.huggingface.co is no longer supported. Please use https://router.huggingface.co instead."}
+2025-12-12 13:58:57,695 - edusolve - ERROR - Question generation failed: RetryError[<Future at 0x23dd9b7b290 state=finished raised Exception>]
+2025-12-12 13:58:57,704 - edusolve - ERROR - QB generation error: RetryError[<Future at 0x23dd9b7b290 state=finished raised Exception>]
+2025-12-12 13:58:57,713 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 13:58:57,717 - edusolve - INFO - EduSolve application started
+2025-12-12 13:59:48,595 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 13:59:48,597 - edusolve - INFO - EduSolve application started
+2025-12-12 13:59:57,213 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 13:59:57,215 - edusolve - INFO - EduSolve application started
+2025-12-12 14:00:18,676 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 14:00:18,678 - edusolve - INFO - EduSolve application started
+2025-12-12 14:00:23,799 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 14:00:23,801 - edusolve - INFO - EduSolve application started
+2025-12-12 14:00:31,089 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 14:00:31,093 - edusolve - INFO - EduSolve application started
+2025-12-12 14:00:32,971 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 14:00:32,976 - edusolve - INFO - EduSolve application started
+2025-12-12 14:00:34,072 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 14:00:34,075 - edusolve - INFO - EduSolve application started
+2025-12-12 14:00:34,884 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 14:00:34,887 - edusolve - INFO - EduSolve application started
+2025-12-12 14:00:36,130 - edusolve - INFO - Cleaned up 0 old files from C:\Edusolve\uploads
+2025-12-12 14:00:36,132 - edusolve - INFO - EduSolve application started

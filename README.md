@@ -53,11 +53,13 @@ HuggingFace API: huggingface.co/settings/tokens
 300 requests/hour free tier
 
 Run the Application
+
 bash
 streamlit run main.py
 The application will open in your browser at http://localhost:8501
 
 📖 Usage
+
 1. Answer Generation
 Navigate to "Answer Generation" page
 

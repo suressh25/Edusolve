@@ -57,7 +57,7 @@ bash
 streamlit run main.py
 The application will open in your browser at http://localhost:8501
 
-📖 Usage
+ Usage
 1. Answer Generation
 Navigate to "Answer Generation" page
 
@@ -93,7 +93,7 @@ Click "Generate Question Bank"
 
 Download generated QB
 
-🏗️ Architecture
+ Architecture
 text
 edusolve/
 ├── api/                 # LLM API clients and router
@@ -103,7 +103,7 @@ edusolve/
 ├── question_generation/ # QB generation from course materials
 ├── utils/               # File handlers and utilities
 └── config/              # Configuration and settings
-🔧 Configuration
+ Configuration
 Edit config/settings.py or .env file to configure:
 
 API keys
@@ -116,7 +116,7 @@ File upload limits
 
 Rate limiting settings
 
-📝 Supported Formats
+ Supported Formats
 Input
 Digital Text: PDF, DOCX, TXT
 
@@ -129,7 +129,7 @@ Word Documents: .docx format
 
 PDF Documents: .pdf format (requires docx2pdf)
 
-🤖 LLM Providers
+LLM Providers
 The system automatically routes requests between providers with fallback:
 
 Groq (Preferred): Fast inference, Llama models
@@ -138,7 +138,7 @@ Google Gemini: Text and vision capabilities
 
 HuggingFace: Mistral models
 
-🧠 RAG Implementation
+RAG Implementation
 Text Splitter: LangChain RecursiveCharacterTextSplitter
 
 Embeddings: sentence-transformers (all-MiniLM-L6-v2)
@@ -147,7 +147,7 @@ Vector Store: FAISS (local, persistent)
 
 Retrieval: Top-k similarity search
 
-🔒 Data Privacy
+Data Privacy
 All processing is done locally
 
 Files stored temporarily in uploads/ directory

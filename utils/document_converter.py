@@ -98,17 +98,16 @@ class DocumentConverter:
             return str(docx_file)
 
     async def _convert_with_libreoffice(self, docx_path: str, pdf_path: str) -> str:
-        """Convert using LibreOffice (cross-platform)"""
+        """Convert using LibreOffice with optimized settings"""
 
         try:
             docx_file = Path(docx_path)
             pdf_file = Path(pdf_path)
             output_dir = pdf_file.parent
 
-            # Determine LibreOffice command
             soffice_cmd = "soffice" if shutil.which("soffice") else "libreoffice"
 
-            # LibreOffice command
+            # Enhanced LibreOffice command with formatting options
             cmd = [
                 soffice_cmd,
                 "--headless",
@@ -116,17 +115,17 @@ class DocumentConverter:
                 "pdf",
                 "--outdir",
                 str(output_dir),
+                "-env:UserInstallation=file:///tmp/LibreOffice_Conversion",  # Isolated config
                 str(docx_file),
             ]
 
             logger.info(f"Running LibreOffice conversion: {' '.join(cmd)}")
 
-            # Run conversion in thread to avoid blocking
             def run_conversion():
                 process = subprocess.Popen(
                     cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
                 )
-                stdout, stderr = process.communicate(timeout=60)
+                stdout, stderr = process.communicate(timeout=90)  # Increased timeout
 
                 if process.returncode != 0:
                     raise subprocess.SubprocessError(
@@ -137,10 +136,8 @@ class DocumentConverter:
 
             await asyncio.to_thread(run_conversion)
 
-            # LibreOffice creates file with same name as input
             generated_pdf = output_dir / f"{docx_file.stem}.pdf"
 
-            # Rename if needed
             if generated_pdf != pdf_file:
                 if pdf_file.exists():
                     pdf_file.unlink()

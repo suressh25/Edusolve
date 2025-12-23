@@ -111,15 +111,17 @@ class BookletCompiler:
     def _add_question_answer(
         self, doc: Document, answer_data: Dict[str, Any], index: int
     ):
-        """Add single Q&A pair to document"""
+        """Add single Q&A pair to document with optimized spacing"""
 
         question_number = answer_data.get("question_number", index)
         question_text = answer_data.get("question_text", "N/A")
         marks = answer_data.get("marks", 0)
         answer_text = answer_data.get("answer", "N/A")
 
-        # Question header
+        # Question header (more compact)
         q_header = doc.add_paragraph()
+        q_header.paragraph_format.space_before = Pt(6)  # Reduced spacing
+        q_header.paragraph_format.space_after = Pt(3)
         q_header_run = q_header.add_run(f"Q{question_number}. {question_text} ")
         q_header_run.font.size = Pt(12)
         q_header_run.bold = True
@@ -130,24 +132,26 @@ class BookletCompiler:
         marks_run.font.color.rgb = RGBColor(0, 102, 204)
         marks_run.italic = True
 
-        doc.add_paragraph()  # Spacing
-
-        # Answer label
+        # Answer label (no extra paragraph)
         answer_label = doc.add_paragraph()
+        answer_label.paragraph_format.space_before = Pt(3)
+        answer_label.paragraph_format.space_after = Pt(3)
         answer_label_run = answer_label.add_run("Answer:")
         answer_label_run.bold = True
         answer_label_run.font.size = Pt(11)
         answer_label_run.font.color.rgb = RGBColor(0, 128, 0)
 
-        # Answer text
+        # Answer text (optimized spacing)
         answer_para = doc.add_paragraph(answer_text)
         answer_para.style = "Normal"
         answer_para.paragraph_format.left_indent = Inches(0.25)
         answer_para.paragraph_format.line_spacing = 1.15
+        answer_para.paragraph_format.space_after = Pt(6)  # Reduced
 
-        # Separator
-        doc.add_paragraph("─" * 80)
-        doc.add_paragraph()
+        # Separator (lighter)
+        separator = doc.add_paragraph("─" * 60)  # Shorter line
+        separator.paragraph_format.space_before = Pt(6)
+        separator.paragraph_format.space_after = Pt(6)
 
     def _add_footer(self, doc: Document, total_answers: int):
         """Add footer information"""

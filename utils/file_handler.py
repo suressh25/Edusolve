@@ -3,6 +3,7 @@ File Handler - Manages file uploads and downloads
 """
 
 import asyncio
+import time
 from typing import Optional
 from pathlib import Path
 import shutil
@@ -62,7 +63,6 @@ class FileHandler:
             if not dir_path.exists():
                 return
 
-            import time
 
             current_time = time.time()
             max_age_seconds = max_age_hours * 3600

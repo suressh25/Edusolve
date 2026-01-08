@@ -3,6 +3,8 @@ Question Bank Cleaner - Generates structured Word document from extracted questi
 """
 
 import asyncio
+import json
+import re
 from typing import List, Dict, Any
 from pathlib import Path
 from docx import Document
@@ -59,9 +61,6 @@ Rules:
                 temperature=0.3,
                 preferred_provider="groq",
             )
-
-            import json
-            import re
 
             json_match = re.search(r"\[.*\]", response["text"], re.DOTALL)
 

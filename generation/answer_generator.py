@@ -222,7 +222,7 @@ class AnswerGenerator:
             prompt = self._create_answer_prompt(question_text, marks, context)
 
             # Calculate appropriate max_tokens
-            max_tokens = min(marks * 80, 2048)
+            max_tokens = int(min(marks * 80, 2048))
 
             # Generate answer (LLM Router will handle logging)
             response = await self.llm_router.generate(

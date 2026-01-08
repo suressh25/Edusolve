@@ -4,6 +4,8 @@ Reduced log verbosity to prevent spam
 """
 
 import asyncio
+import time
+import re
 from typing import Optional, Dict, List, Any
 from tenacity import retry, stop_after_attempt, wait_exponential
 from utils.logger import get_logger
@@ -43,6 +45,8 @@ class LLMRouter:
             self.text_providers.append("mistral")
         if self.openrouter and self.openrouter.configured:
             self.text_providers.append("openrouter")
+        if self.cohere and self.cohere.configured:
+            self.text_providers.append("cohere")
         if self.gemini and self.gemini.configured:
             self.text_providers.append("gemini")
 
@@ -59,7 +63,6 @@ class LLMRouter:
 
     def _should_log(self, message_key: str, interval_seconds: int = 2) -> bool:
         """Throttle log messages to prevent spam"""
-        import time
 
         current_time = time.time()
 
@@ -72,6 +75,51 @@ class LLMRouter:
             return True
 
         return False
+
+    def _clean_error_message(self, error_str: str) -> str:
+        """Extract clean, concise error message"""
+
+        # Common error patterns to extract
+        patterns = [
+            r"Rate limit reached.*?Limit (\d+).*?Used (\d+).*?Requested (\d+).*?Please try again in ([\d.]+[msh])",
+            r"Error code: (\d+) - (.+?)(?:\n|$)",
+            r"status_code: (\d+), message: (.+?)(?:\n|$)",
+        ]
+
+        # Common error patterns to extract
+
+        # Extract rate limit info specifically
+        rate_limit_match = re.search(
+            r"Rate limit reached.*?tokens per (minute|day|hour).*?Limit (\d+).*?Used (\d+).*?Requested (\d+)",
+            error_str,
+            re.IGNORECASE | re.DOTALL,
+        )
+
+        if rate_limit_match:
+            period = rate_limit_match.group(1)
+            limit = rate_limit_match.group(2)
+            used = rate_limit_match.group(3)
+            requested = rate_limit_match.group(4)
+
+            # Calculate percentage used
+            pct = (int(used) / int(limit)) * 100
+
+            return f"Rate limit ({period}): {used}/{limit} tokens ({pct:.1f}%) - Requested {requested} more"
+
+        # Generic error code extraction
+        error_code_match = re.search(r"Error code: (\d+)", error_str)
+        if error_code_match:
+            code = error_code_match.group(1)
+
+            # Get first line of actual error message
+            if "message':" in error_str:
+                msg_match = re.search(r"'message':\s*'([^']+)'", error_str)
+                if msg_match:
+                    msg = msg_match.group(1)[:100]  # First 100 chars
+                    return f"Error {code}: {msg}"
+
+        # Fallback: first 150 chars
+        return error_str[:150] + "..." if len(error_str) > 150 else error_str
 
     @retry(
         stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10)
@@ -86,14 +134,13 @@ class LLMRouter:
     ) -> Dict[str, Any]:
         """Generate text using available LLM API with intelligent fallback"""
 
-        # Determine provider order based on task type
         providers_to_try = self._get_provider_order(task_type, preferred_provider)
 
         last_error = None
 
         for provider in providers_to_try:
             try:
-                # Only log first attempt per batch (reduce spam)
+                # Log without emojis (only once per 5 seconds)
                 if self._should_log(
                     f"attempt_{provider}_{task_type}", interval_seconds=5
                 ):
@@ -106,10 +153,10 @@ class LLMRouter:
                 # Track usage
                 self.usage_stats[provider] += 1
 
-                # Only log success occasionally
+                # Log success without emojis (throttled)
                 if self._should_log(f"success_{provider}", interval_seconds=10):
                     logger.info(
-                        f"✅ {provider} (Total: {self.usage_stats[provider]} calls)"
+                        f"[OK] {provider} (Total: {self.usage_stats[provider]} calls)"
                     )
 
                 return {"text": response, "provider": provider, "success": True}
@@ -117,17 +164,33 @@ class LLMRouter:
             except Exception as e:
                 error_str = str(e)
 
-                # Only log errors once per provider per session
+                # Clean error message
+                clean_error = self._clean_error_message(error_str)
+
+                # Check if it's a rate limit error
+                is_rate_limit = "rate limit" in error_str.lower() or "429" in error_str
+
+                # Log errors cleanly (throttled)
                 if self._should_log(f"error_{provider}", interval_seconds=30):
-                    logger.warning(f"Provider {provider} failed: {error_str[:100]}...")
+                    if is_rate_limit:
+                        logger.warning(f"[RATE LIMIT] {provider}: {clean_error}")
+                    else:
+                        logger.error(f"[FAIL] {provider}: {clean_error}")
 
                 last_error = e
-                await asyncio.sleep(1)
+
+                # For rate limits, wait a bit before trying next provider
+                if is_rate_limit:
+                    await asyncio.sleep(2)
+                else:
+                    await asyncio.sleep(1)
+
                 continue
 
-        # All providers failed
-        logger.error(f"❌ All providers failed. Last error: {str(last_error)[:200]}")
-        raise Exception(f"All LLM providers failed. Last error: {str(last_error)}")
+        # All providers failed - clean error
+        clean_final_error = self._clean_error_message(str(last_error))
+        logger.error(f"[ALL FAILED] Last error: {clean_final_error}")
+        raise Exception(f"All LLM providers failed. Last: {clean_final_error}")
 
     def _get_provider_order(
         self, task_type: str, preferred_provider: Optional[str]
@@ -140,7 +203,7 @@ class LLMRouter:
             "code": ["cerebras", "groq", "mistral"],
             "reasoning": ["cerebras", "groq", "mistral"],
             "fast": ["groq", "cerebras"],  # Speed priority
-            "general": ["groq", "cerebras", "mistral", "openrouter", "gemini"],
+            "general": ["groq", "cerebras", "mistral", "cohere", "openrouter", "gemini"],
         }
 
         # Get preferred order for task
@@ -204,6 +267,9 @@ class LLMRouter:
 
         elif provider == "gemini":
             return await self.gemini.generate(prompt, max_tokens, temperature)
+
+        elif provider == "cohere":
+            return await self.cohere.generate(prompt, max_tokens, temperature)
 
         else:
             raise ValueError(f"Unknown provider: {provider}")

@@ -8,6 +8,10 @@ from typing import List, Dict, Any
 from pathlib import Path
 import fitz  # PyMuPDF
 from PIL import Image
+import json
+import re
+import tempfile
+import os
 from utils.logger import logger
 
 
@@ -46,8 +50,6 @@ If marks are not visible, use "0" as default."""
             )
 
             # Parse JSON response
-            import json
-            import re
 
             json_match = re.search(r"\[.*\]", response, re.DOTALL)
             if json_match:
@@ -84,8 +86,9 @@ If marks are not visible, use "0" as default."""
                     matrix=fitz.Matrix(2, 2)
                 )  # 2x zoom for better OCR
 
-                # Save temporary image
-                temp_image_path = f"/tmp/page_{page_num}.png"
+                # Save temporary image in system temp directory
+                temp_fd, temp_image_path = tempfile.mkstemp(suffix=".png", prefix=f"edupage_{page_num}_")
+                os.close(temp_fd) # Close handle, fitz/PIL will open it
                 pix.save(temp_image_path)
 
                 # Extract questions from this page
@@ -119,10 +122,6 @@ If marks are not visible, use "0" as default."""
     ) -> List[Dict[str, Any]]:
         """Use LLM to reformat vision output into proper JSON"""
 
-        from api.groq_client import GroqClient
-
-        groq = GroqClient()
-
         format_prompt = f"""Convert the following OCR output into proper JSON format:
 
 {vision_response}
@@ -136,7 +135,10 @@ Required JSON format:
 Extract all questions mentioned."""
 
         try:
-            response = await groq.generate(
+            # Use the injected client (Gemini) for reformatting if needed, 
+            # though using Groq via the router would be more optimal for text.
+            # For now, keeping it consistent with the injected client.
+            response = await self.gemini.generate(
                 prompt=format_prompt, max_tokens=4096, temperature=0.1
             )
 

@@ -13,8 +13,8 @@ from .vector_store import VectorStore
 class RAGRetriever:
     """Retrieve relevant context from vector store for RAG"""
 
-    def __init__(self, collection_name: str = "default"):
-        self.embedder = Embedder()
+    def __init__(self, collection_name: str = "default", cohere_client=None):
+        self.embedder = Embedder(cohere_client)
         self.vector_store = VectorStore(collection_name)
         self.k = settings.TOP_K_RESULTS
 

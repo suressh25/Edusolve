@@ -18,8 +18,8 @@ class Settings:
     GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
     GROQ_MODELS = {
         "primary": "llama-3.3-70b-versatile",
-        "fast": "llama3-groq-70b-8192-tool-use-preview",
-        "fallback": "llama-3.1-8b-instant",
+        "fast": "llama-3.3-70b-versatile",
+        "fallback": "llama-3.3-70b-versatile",
     }
 
     # Cerebras (Secondary Text Generation - Ultra Fast)
@@ -54,12 +54,6 @@ class Settings:
         "generation": "command-r-plus-08-2024",
     }
 
-    # === LEGACY PROVIDERS (Deprecated) ===
-
-    # HuggingFace (Kept for backward compatibility)
-    HUGGINGFACE_API_KEY: str = os.getenv("HUGGINGFACE_API_KEY", "")
-    HF_API_URL: str = "https://api-inference.huggingface.co/models"
-    HF_MODEL: str = "mistralai/Mistral-7B-Instruct-v0.1"
 
     # === RATE LIMITS ===
 
@@ -70,7 +64,6 @@ class Settings:
         "mistral": {"rpm": 60, "tpm": 500000, "monthly_tokens": 1000000000},
         "openrouter": {"rpm": 20, "rpd": 50},
         "cohere": {"rpm": 20, "monthly_requests": 1000},
-        "huggingface": {"rpm": 300},  # Added for legacy support
     }
 
     # === RAG CONFIGURATION ===

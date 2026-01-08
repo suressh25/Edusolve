@@ -4,7 +4,9 @@ Handles PDF, DOCX, and TXT files
 """
 
 import asyncio
-from typing import List, Dict, Any
+import json
+import re
+from typing import List, Dict, Any, Optional
 from pathlib import Path
 import fitz  # PyMuPDF
 from docx import Document as DocxDocument
@@ -75,7 +77,7 @@ class TextExtractor:
         # Check if text exceeds safe limit (approximately 8000 words = 10000 tokens)
         word_count = len(text.split())
 
-        if word_count > 6000:
+        if word_count > 1000:
             logger.info(
                 f"Large document detected ({word_count} words). Using chunking strategy."
             )
@@ -116,9 +118,6 @@ class TextExtractor:
                 preferred_provider="groq",
             )
 
-            import json
-            import re
-
             json_match = re.search(r"\[.*\]", response["text"], re.DOTALL)
             if json_match:
                 questions = json.loads(json_match.group())
@@ -135,10 +134,6 @@ class TextExtractor:
             raise
 
     async def _extract_questions_chunked(self, text: str) -> List[Dict[str, Any]]:
-        """Extract questions from large documents using improved chunking strategy"""
-
-        import re
-
         # First, try to split by obvious question markers
         question_pattern = r"(?:^|\n)(?:Q\.?\s*\d+|Question\s+\d+|^\d+[\.\)\:])\s*"
         matches = list(
@@ -194,8 +189,6 @@ class TextExtractor:
                         temperature=0.2,
                         preferred_provider="groq",
                     )
-
-                    import json
 
                     json_match = re.search(r"\[.*\]", response["text"], re.DOTALL)
                     if json_match:
@@ -262,8 +255,6 @@ class TextExtractor:
                         preferred_provider="groq",
                     )
 
-                    import json
-
                     json_match = re.search(r"\[.*\]", response["text"], re.DOTALL)
                     if json_match:
                         chunk_questions = json.loads(json_match.group())
@@ -274,8 +265,8 @@ class TextExtractor:
                             q_num = q.get("question_number", "")
 
                             # Simple deduplication by question number
-                            if q_num not in seen_questions:
-                                seen_questions[q_num] = q
+                            if q_text not in seen_questions:
+                                seen_questions[q_text] = q
                                 all_questions.append(q)
 
                     logger.info(f"Chunk {idx + 1}: Total unique = {len(all_questions)}")
@@ -304,9 +295,6 @@ Output format:
         response = await self.llm_router.generate(
             prompt=format_prompt, max_tokens=4096, temperature=0.1
         )
-
-        import json
-        import re
 
         json_match = re.search(r"\[.*\]", response["text"], re.DOTALL)
         if json_match:

@@ -3,7 +3,9 @@ Question Bank Generator - Generates custom question banks from course materials
 """
 
 import asyncio
-from typing import List, Dict, Any
+import json
+import re
+from typing import List, Dict, Any, Optional
 from docx import Document
 from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -90,10 +92,6 @@ Guidelines:
                 temperature=0.8,
                 preferred_provider="groq",
             )
-
-            # Parse JSON response
-            import json
-            import re
 
             json_match = re.search(r"\[.*\]", response["text"], re.DOTALL)
             if json_match:

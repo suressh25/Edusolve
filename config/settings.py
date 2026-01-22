@@ -26,8 +26,8 @@ class Settings:
     CEREBRAS_API_KEY: str = os.getenv("CEREBRAS_API_KEY", "")
     CEREBRAS_API_URL: str = "https://api.cerebras.ai/v1"
     CEREBRAS_MODELS = {
-        "primary": "llama3.3-70b",
-        "reasoning": "qwen-3-235b-a22b",
+        "primary": "llama-3.3-70b",
+        "reasoning": "qwen-3-235b-a22b-instruct-2507",
         "fast": "llama3.1-8b",
     }
 
@@ -74,6 +74,7 @@ class Settings:
     CHUNK_SIZE: int = int(os.getenv("CHUNK_SIZE", "1000"))
     CHUNK_OVERLAP: int = int(os.getenv("CHUNK_OVERLAP", "200"))
     TOP_K_RESULTS: int = int(os.getenv("TOP_K_RESULTS", "5"))
+    RAG_THRESHOLD: float = float(os.getenv("RAG_THRESHOLD", "0.5"))
 
     # === FILE SETTINGS ===
 

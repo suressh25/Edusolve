@@ -44,9 +44,9 @@ class VectorStore:
                 f"Creating FAISS index with {len(embeddings)} vectors of dimension {self.dimension}"
             )
 
-            # Create FAISS index (using L2 distance)
+            # Create FAISS index (using Inner Product / Cosine Similarity)
             def create():
-                index = faiss.IndexFlatL2(self.dimension)
+                index = faiss.IndexFlatIP(self.dimension)
                 index.add(embeddings.astype("float32"))
                 return index
 
@@ -134,11 +134,10 @@ class VectorStore:
 
             # Retrieve documents with scores
             results = []
-            for idx, distance in zip(indices, distances):
+            for idx, score in zip(indices, distances):
                 if idx < len(self.documents):
-                    # Convert L2 distance to similarity score (inverse)
-                    similarity = 1 / (1 + distance)
-                    results.append((self.documents[idx], float(similarity)))
+                    # For IndexFlatIP with normalized vectors, distance is Cosine Similarity
+                    results.append((self.documents[idx], float(score)))
 
             return results
 

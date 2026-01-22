@@ -20,6 +20,7 @@ outputs/
 vector_stores/
 logs/
 *.log
+Research/
 
 # IDE
 .vscode/

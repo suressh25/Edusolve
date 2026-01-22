@@ -40,6 +40,15 @@ class RAGRetriever:
             # Generate query embedding
             query_embedding = await self.embedder.embed_query(query)
 
+            # Check for dimension mismatch before searching
+            index_dim = self.vector_store.index.d
+            query_dim = len(query_embedding)
+            
+            if index_dim != query_dim:
+                logger.error(f"Dimension mismatch! Index: {index_dim}, Query: {query_dim}")
+                logger.warning("The embedding model has likely changed. Please RE-INDEX your documents in the RAG Module.")
+                return "⚠️ [Dimension Mismatch] Please re-upload/re-index your documents to use the current embedding model."
+
             # Search for similar documents
             k = k or self.k
             results = await self.vector_store.search(query_embedding, k)
@@ -47,16 +56,31 @@ class RAGRetriever:
             if not results:
                 return ""
 
-            # Format context from retrieved documents
+            # Log max similarity for debugging
+            max_score = results[0][1] if results else 0
+            logger.info(f"Query: '{query}' | Max Sim: {max_score:.4f}")
+
+            # Filter by threshold and format context
             context_parts = []
+            relevant_count = 0
+            
             for idx, (doc, score) in enumerate(results, 1):
+                # Check against threshold
+                if score < settings.RAG_THRESHOLD:
+                    continue
+                    
+                relevant_count += 1
                 text = doc.get("text", "")
                 source = doc.get("metadata", {}).get("source", "Unknown")
-                context_parts.append(f"[Source {idx}: {source}]\n{text}")
+                context_parts.append(f"[Source {relevant_count}: {source}] (Sim: {score:.2f})\n{text}")
+
+            if not context_parts:
+                logger.warning(f"No chunks met threshold {settings.RAG_THRESHOLD} for query")
+                return ""
 
             context = "\n\n".join(context_parts)
 
-            logger.info(f"Retrieved {len(results)} relevant chunks for query")
+            logger.info(f"Retrieved {relevant_count} relevant chunks above threshold {settings.RAG_THRESHOLD}")
             return context
 
         except Exception as e:

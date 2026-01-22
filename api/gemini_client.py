@@ -136,27 +136,24 @@ class GeminiClient:
         self.last_request_time = time.time()
         self.request_count += 1
     
-    async def generate(
-        self, prompt: str, max_tokens: int = 2048, temperature: float = 0.7
-    ) -> str:
+    async def generate(self, prompt: str, max_tokens: int = 2048, temperature: float = 0.7) -> str:
         """Generate text using Gemini"""
-
+        
         if not self.configured:
             raise Exception("Gemini client not configured - check API key")
-
+        
         await self._rate_limit()
-
+        
         try:
-            # Use provided temperature
             response = await asyncio.to_thread(
                 self.text_model.generate_content,
                 prompt,
                 generation_config={
-                    "max_output_tokens": max_tokens,
-                    "temperature": temperature,
-                },
+                    'max_output_tokens': max_tokens,
+                    'temperature': temperature
+                }
             )
-
+            
             return response.text
             
         except Exception as e:

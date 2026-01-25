@@ -1,10 +1,12 @@
 """
 Answer Generator - Generates mark-aware answers for questions
+Uses centralized prompts from config.prompts
 """
 
 import asyncio
 from typing import Callable, List, Dict, Any, Optional
 from utils.logger import get_logger
+from config.prompts import PromptManager
 
 logger = get_logger()  # Use singleton
 
@@ -20,91 +22,12 @@ class AnswerGenerator:
         self, question_text: str, marks: int, context: Optional[str] = None
     ) -> str:
         """Create mark-aware prompt with STRICT word count enforcement"""
-
-        # Calculate exact target word count
-        min_words = marks * 35
-        max_words = marks * 50
-        target_words = (min_words + max_words) // 2
-
-        base_prompt = f"""You are an expert academic tutor. Write a comprehensive exam answer.
-
-    QUESTION ({marks} marks): {question_text}
-
-    MANDATORY WORD COUNT: Your answer MUST be between {min_words}-{max_words} words. Target: {target_words} words.
-
-    WRITING INSTRUCTIONS FOR {marks} MARKS:
-    """
-
-        # Specific instructions by mark range
-        if marks == 1:
-            base_prompt += """- One concise sentence (15-25 words)
-    - Direct factual answer only
-    - No elaboration needed"""
-
-        elif marks == 2:
-            base_prompt += """- 2-3 sentences (40-70 words minimum)
-    - State the main concept clearly
-    - Add one supporting detail or example
-    - Be specific and detailed enough for 2 marks"""
-
-        elif marks in [3, 4, 5]:
-            base_prompt += f"""- Write {marks+1} to {marks+2} sentences ({min_words}-{max_words} words)
-    - Introduction: State the main concept
-    - Body: Explain with 2-3 key points
-    - Add relevant examples or details
-    - Ensure sufficient depth for {marks} marks"""
-
-        elif marks in [6, 7, 8, 9, 10]:
-            base_prompt += f"""- Write 2-3 paragraphs ({min_words}-{max_words} words)
-    - Introduction paragraph: Define/introduce the concept (30-40 words)
-    - Body paragraph(s): Explain 3-4 key points with details (100-180 words)
-    - Brief conclusion: Summarize or state significance (20-30 words)
-    - Include examples, formulas, or diagrams if relevant"""
-
-        elif marks in [11, 12, 13, 14, 15]:
-            base_prompt += f"""- Write a comprehensive essay ({min_words}-{max_words} words minimum)
-    - Introduction: Context and overview (50-70 words)
-    - Body: 3-4 detailed paragraphs covering:
-    * Each major aspect in depth (80-100 words per paragraph)
-    * Include examples, comparisons, applications
-    * Use technical terminology appropriately
-    - Conclusion: Summary and implications (50-70 words)
-    - This is {marks} marks - write extensively with full details"""
-
-        else:  # 16+ marks
-            base_prompt += f"""- Write an extensive essay ({min_words}-{max_words} words minimum)
-    - Detailed introduction with background (80-100 words)
-    - Multiple body sections (4-5 paragraphs):
-    * Each section thoroughly explores one aspect (100-120 words)
-    * Include examples, case studies, comparisons
-    * Critical analysis and evaluation
-    - Comprehensive conclusion (80-100 words)
-    - This is {marks} marks - write very extensively"""
-
-        base_prompt += f"""
-
-    CRITICAL REQUIREMENTS:
-    ✓ Write EXACTLY {target_words} words (±10% acceptable)
-    ✓ Use proper paragraph structure
-    ✓ Write in formal academic language
-    ✓ Include specific details, not generic statements
-    ✓ For {marks} marks, depth and detail are essential
-
-    Start writing your {target_words}-word answer now:"""
-
-        if context:
-            base_prompt = f"""You are an expert academic tutor using provided study materials.
-
-    CONTEXT FROM STUDY MATERIALS:
-    {context[:2000]}
-
-    QUESTION ({marks} marks): {question_text}
-
-    MANDATORY WORD COUNT: {min_words}-{max_words} words. Target: {target_words} words.
-
-    {base_prompt.split('MANDATORY WORD COUNT:')[1]}"""
-
-        return base_prompt
+        return PromptManager.get_prompt(
+            "generate_answer",
+            marks=marks,
+            question_text=question_text,
+            context=context,
+        )
 
     async def generate_batch_answers(
         self,

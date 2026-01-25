@@ -1,6 +1,7 @@
 """
 Image-based question extraction using Vision LLM APIs
 Handles scanned PDFs and image files (JPG, PNG)
+Uses centralized prompts from config.prompts
 """
 
 import asyncio
@@ -13,6 +14,7 @@ import re
 import tempfile
 import os
 from utils.logger import logger
+from config.prompts import PromptManager
 
 
 class ImageExtractor:
@@ -24,25 +26,7 @@ class ImageExtractor:
     async def extract_from_image_file(self, image_path: str) -> List[Dict[str, Any]]:
         """Extract questions from a single image file"""
 
-        ocr_prompt = """Perform OCR on this image and extract ALL academic questions.
-
-For each question, identify:
-1. Question Number (e.g., Q1, Question 1, 1., etc.)
-2. Complete Question Text
-3. Marks Allocated (if mentioned, look for patterns like [5], (5 marks), 5M, etc.)
-
-Output in this exact JSON format:
-[
-  {
-    "question_number": "1",
-    "question_text": "Complete question text here",
-    "marks": "5"
-  },
-  ...
-]
-
-Be thorough - extract every question visible in the image, even if handwritten or poorly scanned.
-If marks are not visible, use "0" as default."""
+        ocr_prompt = PromptManager.get_prompt("extract_image")
 
         try:
             response = await self.gemini.generate_with_image(
@@ -87,8 +71,10 @@ If marks are not visible, use "0" as default."""
                 )  # 2x zoom for better OCR
 
                 # Save temporary image in system temp directory
-                temp_fd, temp_image_path = tempfile.mkstemp(suffix=".png", prefix=f"edupage_{page_num}_")
-                os.close(temp_fd) # Close handle, fitz/PIL will open it
+                temp_fd, temp_image_path = tempfile.mkstemp(
+                    suffix=".png", prefix=f"edupage_{page_num}_"
+                )
+                os.close(temp_fd)  # Close handle, fitz/PIL will open it
                 pix.save(temp_image_path)
 
                 # Extract questions from this page
@@ -122,24 +108,15 @@ If marks are not visible, use "0" as default."""
     ) -> List[Dict[str, Any]]:
         """Use LLM to reformat vision output into proper JSON"""
 
-        format_prompt = f"""Convert the following OCR output into proper JSON format:
+        format_prompt = PromptManager.get_prompt("reformat")
+        full_prompt = f"""{format_prompt}
 
-{vision_response}
-
-Required JSON format:
-[
-  {{"question_number": "1", "question_text": "...", "marks": "5"}},
-  ...
-]
-
-Extract all questions mentioned."""
+VISION API OUTPUT TO CONVERT:
+{vision_response}"""
 
         try:
-            # Use the injected client (Gemini) for reformatting if needed, 
-            # though using Groq via the router would be more optimal for text.
-            # For now, keeping it consistent with the injected client.
             response = await self.gemini.generate(
-                prompt=format_prompt, max_tokens=4096, temperature=0.1
+                prompt=full_prompt, max_tokens=4096, temperature=0.1
             )
 
             import json

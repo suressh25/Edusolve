@@ -1,6 +1,7 @@
 """
 Text-based question extraction using LLM APIs
 Handles PDF, DOCX, and TXT files
+Uses centralized prompts from config.prompts
 """
 
 import asyncio
@@ -11,6 +12,7 @@ from pathlib import Path
 import fitz  # PyMuPDF
 from docx import Document as DocxDocument
 from utils.logger import logger
+from config.prompts import PromptManager
 
 
 class TextExtractor:
@@ -88,32 +90,16 @@ class TextExtractor:
     async def _extract_questions_single(self, text: str) -> List[Dict[str, Any]]:
         """Extract questions from text that fits in context window"""
 
-        prompt = f"""Extract all academic questions from the following text.
+        prompt = PromptManager.get_prompt("extract_text")
+        full_prompt = f"""{prompt}
 
-    For each question, identify:
-    1. Question Number
-    2. Complete Question Text
-    3. Marks Allocated (if mentioned)
-
-    Text to analyze:
-    {text[:15000]}  # Increased from 8000
-
-    Output the questions in this exact JSON format:
-    [
-    {{
-        "question_number": "1",
-        "question_text": "Full question text here",
-        "marks": "5"
-    }},
-    ...
-    ]
-
-    If marks are not specified, estimate based on question complexity (2-15 marks). Extract ALL questions found in the text."""
+TEXT TO ANALYZE:
+{text[:15000]}"""
 
         try:
             response = await self.llm_router.generate(
-                prompt=prompt,
-                max_tokens=6144,  # Increased from 4096
+                prompt=full_prompt,
+                max_tokens=6144,
                 temperature=0.3,
                 preferred_provider="groq",
             )
@@ -165,22 +151,13 @@ class TextExtractor:
                     f"Processing question batch {batch_start + 1}-{min(batch_start + batch_size, len(questions_texts))} of {len(questions_texts)}"
                 )
 
-                batch_prompt = f"""Extract ALL academic questions from the following text.
+                base_prompt = PromptManager.get_prompt("extract_text")
+                batch_prompt = f"""{base_prompt}
 
-    Text contains {len(batch)} questions:
-    {batch_text}
+TEXT CHUNK ({len(batch)} questions):
+{batch_text}
 
-    Output in JSON format:
-    [
-    {{
-        "question_number": "1",
-        "question_text": "Full question text here",
-        "marks": "5"
-    }},
-    ...
-    ]
-
-    IMPORTANT: Extract ALL {len(batch)} questions. If marks not specified, estimate (2-15 range)."""
+Extract ALL {len(batch)} questions from this chunk."""
 
                 try:
                     response = await self.llm_router.generate(
@@ -227,25 +204,15 @@ class TextExtractor:
             all_questions = []
             seen_questions = {}
 
+            base_prompt = PromptManager.get_prompt("extract_text")
+
             for idx, chunk in enumerate(chunks):
                 logger.info(f"Processing chunk {idx + 1}/{len(chunks)}")
 
-                chunk_prompt = f"""Extract ALL academic questions from this text chunk.
+                chunk_prompt = f"""{base_prompt}
 
-    Text:
-    {chunk}
-
-    Output in JSON format:
-    [
-    {{
-        "question_number": "1",
-        "question_text": "Full question text",
-        "marks": "5"
-    }},
-    ...
-    ]
-
-    Extract ALL questions. Estimate marks if not specified (2-15)."""
+TEXT CHUNK ({idx + 1}/{len(chunks)}):
+{chunk}"""
 
                 try:
                     response = await self.llm_router.generate(
@@ -281,19 +248,14 @@ class TextExtractor:
     async def _fallback_extraction(self, llm_response: str) -> List[Dict[str, Any]]:
         """Fallback parser if JSON extraction fails"""
 
-        # Use another LLM call to format the response
-        format_prompt = f"""Convert the following extracted questions into proper JSON format:
+        format_prompt = PromptManager.get_prompt("reformat")
+        full_prompt = f"""{format_prompt}
 
-{llm_response}
-
-Output format:
-[
-  {{"question_number": "1", "question_text": "...", "marks": "5"}},
-  ...
-]"""
+UNSTRUCTURED OUTPUT TO CONVERT:
+{llm_response}"""
 
         response = await self.llm_router.generate(
-            prompt=format_prompt, max_tokens=4096, temperature=0.1
+            prompt=full_prompt, max_tokens=4096, temperature=0.1
         )
 
         json_match = re.search(r"\[.*\]", response["text"], re.DOTALL)

@@ -1,5 +1,6 @@
 """
 Question Bank Generator - Generates custom question banks from course materials
+Uses centralized prompts from config.prompts
 """
 
 import asyncio
@@ -11,6 +12,7 @@ from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from pathlib import Path
 from utils.logger import logger
+from config.prompts import PromptManager
 
 
 class QuestionBankGenerator:
@@ -36,58 +38,23 @@ class QuestionBankGenerator:
         if marks_distribution is None:
             marks_distribution = {"2": 5, "5": 10, "10": 5}
 
-        # Build marks distribution string
-        marks_info = ", ".join(
-            [f"{count}x {marks} marks" for marks, count in marks_distribution.items()]
+        generation_prompt = PromptManager.get_prompt(
+            "generate",
+            num_questions=num_questions,
+            difficulty=difficulty,
+            question_types=question_types,
+            marks_distribution=marks_distribution,
+            topics=topics,
         )
 
-        # Build question types string
-        types_info = ", ".join(question_types)
+        full_prompt = f"""{generation_prompt}
 
-        # Build topics string
-        topics_info = ", ".join(topics) if topics else "All topics in the material"
-
-        generation_prompt = f"""You are an expert academic question paper creator. Generate {num_questions} high-quality exam questions based on the following course material.
-
-Course Material:
-{course_text[:10000]}
-
-Requirements:
-- Difficulty Level: {difficulty}
-- Question Types: {types_info}
-- Marks Distribution: {marks_info}
-- Topics to Focus: {topics_info}
-- Total Questions: {num_questions}
-
-For each question, provide:
-1. Question Number
-2. Complete Question Text
-3. Question Type
-4. Marks Allocated
-5. Topic/Concept Covered
-
-Output in this exact JSON format:
-[
-  {{
-    "question_number": "1",
-    "question_text": "Complete question here",
-    "question_type": "Short Answer",
-    "marks": "2",
-    "topic": "Topic name"
-  }},
-  ...
-]
-
-Guidelines:
-- Ensure questions test understanding, not just memorization
-- Cover diverse concepts from the material
-- Match difficulty level appropriately
-- Distribute marks according to specification
-- Make questions clear and unambiguous"""
+COURSE MATERIAL:
+{course_text[:10000]}"""
 
         try:
             response = await self.llm_router.generate(
-                prompt=generation_prompt,
+                prompt=full_prompt,
                 max_tokens=6144,
                 temperature=0.8,
                 preferred_provider="groq",

@@ -1,5 +1,6 @@
 """
 Question Bank Cleaner - Generates structured Word document from extracted questions
+Uses centralized prompts from config.prompts
 """
 
 import asyncio
@@ -11,6 +12,7 @@ from docx import Document
 from docx.shared import Pt, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from utils.logger import logger
+from config.prompts import PromptManager
 
 
 class QuestionBankCleaner:
@@ -32,31 +34,15 @@ class QuestionBankCleaner:
             ]
         )
 
-        standardize_prompt = f"""Standardize the following extracted questions. Fix any OCR errors, formatting issues, or inconsistencies.
+        standardize_prompt = PromptManager.get_prompt("standardize")
+        full_prompt = f"""{standardize_prompt}
 
-Questions to standardize:
-{questions_text}
-
-Output in this exact JSON format:
-[
-  {{
-    "question_number": "1",
-    "question_text": "Corrected and complete question text",
-    "marks": "5"
-  }},
-  ...
-]
-
-Rules:
-1. Fix spelling and grammar errors from OCR
-2. Ensure question text is complete and coherent
-3. Maintain original question numbering
-4. Preserve technical terms and formulas accurately
-5. If marks are unclear or missing, estimate based on question complexity"""
+QUESTIONS TO STANDARDIZE:
+{questions_text}"""
 
         try:
             response = await self.llm_router.generate(
-                prompt=standardize_prompt,
+                prompt=full_prompt,
                 max_tokens=6144,
                 temperature=0.3,
                 preferred_provider="groq",

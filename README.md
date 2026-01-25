@@ -1,113 +1,238 @@
-# EduSolve 🎓🚀
+# EduSolve 
+**IEEE MegaProject'25 Hackathon Submission**
 
-**EduSolve** is a professional, GenAI-powered academic automation suite designed to streamline educational workflows. By orchestrating a multi-provider LLM network and advanced Retrieval-Augmented Generation (RAG), EduSolve automates answer generation, creates structured curriculum materials, and simplifies complex document parsing.
+---
 
-## 🌟 Key Features
+## Team Details
 
-### 1. 🧠 Answer Generation Module
-*   **Hybrid Input System**: Supports both **File Uploads** (PDF, Docx, Images) and **Direct Text Entry** side-by-side.
-*   **Independent Processing Flows**: Decoupled streams for:
-    *   **Flow A (Cleaned QB)**: Instantly generates standardized, editable Word/PDF question banks.
-    *   **Flow B (Answer Booklet)**: AI-synthesis of mark-weighted answers with citations.
-*   **Dynamic Formatting**: Choose between **Word (.docx)** and **PDF (.pdf)** at the moment of download.
+**Team Name:** Hackwarts
 
-### 2. 📚 Advanced RAG Module
-*   **Enterprise-Grade Embeddings**: Support for **Cohere Embed v3** for superior retrieval and local academic models (Hugging Face) for privacy.
-*   **Knowledge Ingestion**: Index textbooks, lecture notes, and research papers into a persistence FAISS vector store.
-*   **Hallucination Guardrails**: Answers are grounded strictly in uploaded study materials.
+**Team Members:**
+- Suresh Kumar K
+- Tanusree P
 
-### 3. 🎯 QB Generator Module (New)
-*   **Curriculum Synthesis**: Generate high-quality question banks directly from uploaded study materials.
-*   **Customizable Difficulty**: Tailor questions based on Bloom's Taxonomy or specific mark distributions.
-*   **Multi-Type Support**: Create MCQs, short answers, and long descriptive questions automatically.
+---
 
-### 🤖 Intelligent LLM Router
-*   **Failover Reliability**: Automatically routes between **Groq, Gemini, Cerebras, Mistral, OpenRouter, and Cohere**.
-*   **Optimized Performance**: Integrated **Streamlit Caching (`@st.cache_resource`)** for instant client initialization and model loading.
-*   **OCR Hybrid Engine**: Uses Gemini 1.5 Flash for vision extraction and Groq for high-speed text processing.
+## Project Domain
 
-## 🛠️ Technology Stack
+**Educational Technology (EdTech) & Artificial Intelligence**
 
-*   **Frontend**: [Streamlit](https://streamlit.io/)
-*   **Core Logic**: Python (Service-Oriented Architecture)
-*   **Package Management**: [uv](https://github.com/astral-sh/uv) (Recommended) or pip
-*   **Document Processing**: PyMuPDF, ReportLab, python-docx
-*   **AI Engine**: Multi-Provider Router (Groq, Gemini, Cohere, Cerebras)
+EduSolve addresses the academic and education sector by leveraging generative AI to automate workflows for educators, students, and academic institutions.
 
-### 🤖 Model Orchestration
+---
 
-| Provider | Model | Role | Priority |
-| :--- | :--- | :--- | :--- |
-| **Groq** | `llama-3.1-70b` | Primary Text | 1 |
-| **Cerebras** | `llama3.3-70b` | Fast Fallback | 2 |
-| **Cohere** | `command-r-plus` | RAG / Text | 3 |
-| **Gemini** | `flash-1.5` | Vision / OCR | 1 (Vision) |
-| **Mistral** | `mistral-small` | High-Vol Text | 4 |
+## Idea
 
-## 📂 Project Structure
+**Problem Statement:**
+Educators spend countless hours manually creating question papers, generating answer keys, and preparing study materials. Students struggle to find relevant information from large volumes of study materials. Traditional methods are time-consuming, error-prone, and lack standardization.
 
+**Solution:**
+EduSolve is a professional, GenAI-powered academic automation suite that revolutionizes educational workflows through:
+- **AI-Powered Answer Generation**: Automatically generates comprehensive, mark-weighted answers from question papers (PDF, DOCX, Images)
+- **Advanced RAG Module**: Enables intelligent document search and retrieval from uploaded textbooks and study materials using vector embeddings
+- **Question Bank Generator**: Creates high-quality, curriculum-aligned question banks from study materials with customizable difficulty levels
+- **Multi-Modal Document Processing**: Handles text extraction, OCR, and document parsing with hybrid AI models
+- **Intelligent LLM Router**: Ensures 99.9% uptime with automatic failover across multiple AI providers (Groq, Gemini, Cohere, Cerebras, Mistral)
+
+**Key Features:**
+- **Answer Generation Module**: Hybrid input system supporting file uploads and direct text entry with independent processing flows
+- **Advanced RAG Module**: Enterprise-grade embeddings with FAISS vector store for hallucination-free answers
+- **QB Generator Module**: Curriculum synthesis with Bloom's Taxonomy-based difficulty customization
+- **Intelligent LLM Router**: Automatic failover across 6 AI providers for maximum reliability
+
+---
+
+## Tech Stack Used
+
+**Frontend:**
+- Streamlit (Multi-page Web Application)
+
+**Backend:**
+- Python 3.10+
+- Service-Oriented Architecture (SOA)
+
+**AI/ML:**
+- Groq (llama-3.1-70b) - Primary Text Generation
+- Cerebras (llama3.3-70b) - Fast Fallback
+- Google Gemini (flash-1.5) - Vision/OCR
+- Cohere (command-r-plus, embed-v3) - RAG & Embeddings
+- Mistral (mistral-small) - High-Volume Text Processing
+- OpenRouter - Alternative AI Provider
+
+**Vector Database:**
+- FAISS (Facebook AI Similarity Search)
+
+**Document Processing:**
+- PyMuPDF - PDF Parsing
+- python-docx - Word Document Generation
+- ReportLab - PDF Generation
+- Pillow - Image Processing
+
+**Package Management:**
+- uv
+
+**Additional Libraries:**
+- LangChain - RAG Framework
+- Hugging Face Transformers - Local Embeddings
+- Streamlit Caching - Performance Optimization
+
+---
+
+## How to Execute Your Code
+
+### Prerequisites
+- Python 3.10 or higher
+- API Keys for: Groq, Gemini, Cohere (optional: Cerebras, Mistral, OpenRouter)
+- Internet connection
+
+### Step-by-Step Instructions
+
+**1. Clone the Repository**
 ```bash
-Edusolve/
-├── api/                     # LLM integration and routing logic
-├── extraction/              # OCR and Document parsing (Vision/Text/Cleaner)
-├── generation/              # AI Synthesis (Answers/Booklets)
-├── question_generation/      # QB Generator logic
-├── services/                # Business logic (Decoupled flows)
-├── components/              # Reusable UI elements (Sidebar, etc.)
-├── pages/                   # Streamlit multi-page application files
-├── rag/                     # RAG implementation (Embedder, Retriever, Processor)
-├── utils/                   # Performance (Caching, Bootstrapping, Logger)
-├── config/                  # Global Settings and Model Configs
-├── Research/                # Reference papers and academic materials
-├── tests/                   # Verification and unit tests
-├── outputs/                 # Final Word/PDF generations
-├── vector_stores/           # FAISS persistence layer
-└── main.py                  # Entry Point
+git clone https://github.com/suressh25/Edusolve.git
+cd Edusolve
 ```
 
-## 🚀 Getting Started
+**2. Create Virtual Environment**
+```bash
+# Using uv (Recommended - Lightning Fast)
+uv venv
+.venv\Scripts\activate  # Windows
+# source .venv/bin/activate  # macOS/Linux
 
-### Installation
+# OR using standard Python
+python -m venv venv
+venv\Scripts\activate  # Windows
+# source venv/bin/activate  # macOS/Linux
+```
 
-We recommend using [uv](https://github.com/astral-sh/uv) for lightning-fast dependency management.
+**3. Install Dependencies**
+```bash
+# Using uv (Recommended)
+uv pip install -r requirements.txt
 
-1.  **Clone & Environment**
-    ```bash
-    git clone https://github.com/yourusername/Edusolve.git
-    cd Edusolve
-    # Using uv (Recommended)
-    uv venv
-    source .venv/bin/activate  # or .venv\Scripts\activate on Windows
-    ```
+# OR using standard pip
+pip install -r requirements.txt
+```
 
-2.  **Dependencies**
-    ```bash
-    # Using uv
-    uv pip install -r requirements.txt
-    # OR using standard pip
-    pip install -r requirements.txt
-    ```
+**4. Configure API Keys**
+Create a `.env` file in the project root directory:
+```env
+GROQ_API_KEY=your_groq_api_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
+COHERE_API_KEY=your_cohere_api_key_here  # Recommended for RAG
+CEREBRAS_API_KEY=your_cerebras_api_key_here  # Optional
+MISTRAL_API_KEY=your_mistral_api_key_here  # Optional
+OPENROUTER_API_KEY=your_openrouter_api_key_here  # Optional
+```
 
-3.  **API Configuration**
-    Create a `.env` file with your keys:
-    ```env
-    GROQ_API_KEY=...
-    GEMINI_API_KEY=...
-    COHERE_API_KEY=... # Recommended for RAG
-    CEREBRAS_API_KEY=...
-    ```
-
-### Running the App
+**5. Run the Application**
 ```bash
 streamlit run main.py
 ```
 
-## 🤝 Contribution
-Contributions are welcome! This codebase is optimized for cross-platform scalability.
+**6. Access the Application**
+Open your browser and navigate to:
+```
+http://localhost:8501
+```
 
-## 📄 License
-MIT License.
+### Using the Application
+
+**Answer Generation:**
+1. Navigate to "Answer Generation" page
+2. Upload question paper (PDF/DOCX/Image) or paste text
+3. Select output format (Word/PDF)
+4. Click "Generate Answers" and download the result
+
+**RAG Module:**
+1. Navigate to "RAG Module" page
+2. Upload study materials (PDFs, DOCX files)
+3. Click "Process Documents" to create vector embeddings
+4. Ask questions and get context-aware answers
+
+**QB Generator:**
+1. Navigate to "QB Generator" page
+2. Upload curriculum/study materials
+3. Configure question types and difficulty
+4. Generate and download question bank
 
 ---
-**EduSolve v2.1** | Refactored Architecture | Powered by Free LLM APIs
+
+## Code Sample/Link to Hosted Website
+
+**GitHub Repository:**
+[https://github.com/suressh25/Edusolve](https://github.com/suressh25/Edusolve)
+
+**Project Demo Video:**
+[https://edusolvein.streamlit.app/](https://edusolvein.streamlit.app/)
+
+**Code Sample - LLM Router with Automatic Failover:**
+```python
+# Intelligent LLM Router with automatic failover
+from api.llm_router import get_llm_router
+
+# Initialize router with multiple providers
+router = get_llm_router()
+
+# Automatically routes to best available provider
+response = router.generate_text(
+    prompt="Generate answers for this question paper...",
+    use_case="answer_generation"
+)
+
+# Fallback chain: Groq → Cerebras → Cohere → Mistral → OpenRouter
+```
+
+**Code Sample - RAG Implementation:**
+```python
+# Advanced RAG with FAISS vector store
+from rag.retriever import Retriever
+from rag.embedder import Embedder
+
+# Process documents and create embeddings
+embedder = Embedder()
+retriever = Retriever(collection_name="study_materials")
+
+# Upload and index documents
+retriever.add_documents(documents)
+
+# Query with context-aware retrieval
+answer = retriever.query(
+    question="Explain neural networks",
+    top_k=5
+)
+```
+
+---
+
+## Project Structure
+
+```bash
+Edusolve/
+├── api/                     # LLM integration and routing logic
+├── extraction/              # OCR and Document parsing
+├── generation/              # AI Synthesis (Answers/Booklets)
+├── question_generation/     # QB Generator logic
+├── services/                # Business logic (Decoupled flows)
+├── components/              # Reusable UI elements
+├── pages/                   # Streamlit multi-page application
+├── rag/                     # RAG implementation (FAISS)
+├── utils/                   # Utilities and helpers
+├── config/                  # Global Settings
+├── tests/                   # Verification tests
+├── outputs/                 # Generated files
+├── vector_stores/           # FAISS persistence
+└── main.py                  # Application entry point
+```
+
+---
+
+## License
+
+MIT License
+
+---
+
+**EduSolve v2.1** | IEEE MegaProject'25 | Powered by Multi-Provider AI Network
 

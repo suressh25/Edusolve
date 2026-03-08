@@ -57,9 +57,7 @@ def render_answer_generation():
             key="qb_uploader",
         )
         if uploaded_file:
-            if st.button(
-                "🔍 Extract from File", type="primary", key="btn_extract_file"
-            ):
+            if st.button("Process File", type="primary", key="btn_extract_file"):
                 with st.spinner("Extracting questions..."):
                     try:
                         file_path = asyncio.run(
@@ -89,7 +87,7 @@ def render_answer_generation():
             placeholder="Q1. What is AI?\nQ2. Explain RAG with examples.",
             key="qb_manual_text",
         )
-        if st.button("🔍 Process Manual Text", type="primary", key="btn_extract_text"):
+        if st.button("Process Text", type="primary", key="btn_extract_text"):
             if raw_text.strip():
                 with st.spinner("Processing text..."):
                     try:

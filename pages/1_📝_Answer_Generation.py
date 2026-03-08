@@ -119,10 +119,35 @@ def render_answer_generation():
         )
 
         with st.expander("👁️ Preview Extracted Questions"):
+            st.markdown(
+                """
+                <style>
+                .preview-box {
+                    max-height: 350px;
+                    overflow-y: scroll;
+                    padding: 15px;
+                    background-color: #f8f9fa;
+                    color: #111;
+                    border-radius: 8px;
+                    border: 1px solid #dee2e6;
+                }
+                .preview-box::-webkit-scrollbar { width: 8px; }
+                .preview-box::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 8px; }
+                .preview-box::-webkit-scrollbar-thumb { background: #888; border-radius: 8px; }
+                .preview-box::-webkit-scrollbar-thumb:hover { background: #555; }
+                </style>
+                """,
+                unsafe_allow_html=True,
+            )
+            preview_html = ""
             for q in st.session_state.raw_questions:
-                st.markdown(
-                    f"**Q{q.get('question_number', '?')}** ({q.get('marks', '0')} marks): {q.get('question_text', 'No text')}"
-                )
+                preview_html += f"<strong>Q{q.get('question_number', '?')}</strong> ({q.get('marks', '0')} marks)<br><br>"
+                preview_html += f"{q.get('question_text', 'No text')}<br><br><hr style='border: 1px solid #ddd;'><br>"
+
+            st.markdown(
+                f'<div class="preview-box">{preview_html}</div>',
+                unsafe_allow_html=True,
+            )
 
         st.markdown("---")
 
@@ -149,7 +174,9 @@ def render_answer_generation():
         with flow_col1:
             st.markdown("#### 🧹 Flow A: Cleaned QB")
             st.caption("Standardizes formatting and validates marks alignment.")
-            if st.button("🧹 Generate Cleaned QB", use_container_width=True):
+            if st.button(
+                "🧹 Generate Cleaned QB", use_container_width=True, type="primary"
+            ):
                 with st.spinner("Compiling QB..."):
                     try:
                         path = asyncio.run(
@@ -159,24 +186,59 @@ def render_answer_generation():
                             )
                         )
                         st.session_state.cleaned_qb_path = path
-                        st.success("✅ Cleaned QB Ready")
                     except Exception as e:
                         st.error(f"❌ Failed: {str(e)}")
 
             if st.session_state.cleaned_qb_path:
-                st.info("📦 Output Available")
+                # Preview Section
+                with st.expander("💡 Preview Cleaned Questions", expanded=False):
+                    st.markdown(
+                        """
+                        <style>
+                        .qb-preview-container {
+                            max-height: 350px;
+                            overflow-y: scroll;
+                            padding: 15px;
+                            background-color: #f8f9fa;
+                            color: #111;
+                            border-radius: 8px;
+                            border: 1px solid #dee2e6;
+                        }
+                        .qb-preview-container::-webkit-scrollbar { width: 8px; }
+                        .qb-preview-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 8px; }
+                        .qb-preview-container::-webkit-scrollbar-thumb { background: #888; border-radius: 8px; }
+                        .qb-preview-container::-webkit-scrollbar-thumb:hover { background: #555; }
+                        </style>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+                    qb_preview_html = ""
+                    for q in st.session_state.raw_questions:
+                        qb_preview_html += f"<strong>Q{q.get('question_number', '?')}</strong> ({q.get('marks', '0')} marks)<br><br>"
+                        qb_preview_html += f"{q.get('question_text', 'No text')}<br><br><hr style='border: 1px solid #ddd;'><br>"
+                    st.markdown(
+                        f'<div class="qb-preview-container">{qb_preview_html}</div>',
+                        unsafe_allow_html=True,
+                    )
+
+                # Download Section
+                st.markdown("##### 📥 Download Question Bank")
                 qb_fmt = st.radio(
-                    "Download as:", ["DOCX", "PDF"], key="qb_fmt_sel", horizontal=True
+                    "Choose Format:",
+                    ["Word (.docx)", "PDF (.pdf)"],
+                    key="qb_fmt_sel",
+                    horizontal=True,
                 )
 
                 if st.button(
-                    "📥 Prepare & Download QB",
+                    "🔨 Compile & Download QB",
                     key="btn_dl_qb",
                     use_container_width=True,
+                    type="primary",
                 ):
                     with st.spinner("Preparing..."):
                         try:
-                            if qb_fmt == "PDF":
+                            if "PDF" in qb_fmt:
                                 # Convert questions to dummy answers for the booklet compiler
                                 dummy_answers = [
                                     {
@@ -205,7 +267,7 @@ def render_answer_generation():
                                     use_container_width=True,
                                 )
                         except Exception as e:
-                            st.error(f"❌ preparation failed: {str(e)}")
+                            st.error(f"❌ Preparation failed: {str(e)}")
 
         # Flow B: Answer Booklet
         with flow_col2:
@@ -243,23 +305,49 @@ def render_answer_generation():
                     st.session_state.generated_answers = answers
                     st.session_state.booklet_processing = False
                     st.success("✅ Answers Generated Successfully")
-                    st.balloons()
                 except Exception as e:
                     st.error(f"❌ Error: {str(e)}")
                     st.session_state.booklet_processing = False
 
             if st.session_state.generated_answers:
-                with st.expander("💡 Preview Answers"):
+                # Preview Section
+                with st.expander("💡 Preview Generated Answers", expanded=False):
+                    st.markdown(
+                        """
+                        <style>
+                        .answer-preview-container {
+                            max-height: 350px;
+                            overflow-y: scroll;
+                            padding: 15px;
+                            background-color: #f8f9fa;
+                            color: #111;
+                            border-radius: 8px;
+                            border: 1px solid #dee2e6;
+                        }
+                        .answer-preview-container::-webkit-scrollbar { width: 8px; }
+                        .answer-preview-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 8px; }
+                        .answer-preview-container::-webkit-scrollbar-thumb { background: #888; border-radius: 8px; }
+                        .answer-preview-container::-webkit-scrollbar-thumb:hover { background: #555; }
+                        </style>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+                    answer_preview_html = ""
                     for a in st.session_state.generated_answers:
-                        st.markdown(f"**Q{a.get('question_number')}**")
-                        st.write(a.get("answer", "Failed to generate"))
-                        st.markdown("---")
+                        answer_preview_html += f"<strong>Q{a.get('question_number')}</strong> ({a.get('marks', '0')} marks)<br><br>"
+                        answer_preview_html += f"{a.get('answer', 'Failed to generate')}<br><br><hr style='border: 1px solid #ddd;'><br>"
+                    st.markdown(
+                        f'<div class="answer-preview-container">{answer_preview_html}</div>',
+                        unsafe_allow_html=True,
+                    )
 
-                st.markdown("##### 📥 Download Booklet")
-                booklet_fmt = st.selectbox(
-                    "Choose Format",
+                # Download Section
+                st.markdown("##### 📥 Download Answer Booklet")
+                booklet_fmt = st.radio(
+                    "Choose Format:",
                     ["Word (.docx)", "PDF (.pdf)"],
                     key="booklet_fmt_sel",
+                    horizontal=True,
                 )
 
                 if st.button(
